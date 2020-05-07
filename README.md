@@ -1,7 +1,24 @@
 # Delay-Embedding-based-Forecast-Machine
 The source code of paper "Multi-step-ahead Prediction from Short-term Data by Delay-Embedding-based Forecast Machine".
 
-## Experiment Reuslts
+
+## Data avalability
+For the reason that all the data files are too large, thus all datasets can be download from [Google Drive](https://drive.google.com/open?id=1MLwkQ4APxGHVxnTFOM_TShdHQRJg8dzX). After downloading the zip file, you should extract all dataset folders in the zip file to the target folder `logs/data/`
+
+## Environment requirements
+
+- python = 3.6
+- tenforflow = 2.1
+- cuda-version = 10.1
+- cudnn-version = 7.6.5
+
+We suggest that you run the code with Pycharm.
+
+## Training and making predicitons
+
+All the training codes and predicting codes corresponding to different datasets are located at `forecast/` 
+
+## Experiment reuslts
 
 (a)
 
