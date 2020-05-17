@@ -1,5 +1,6 @@
 # Delay-Embedding-based-Forecast-Machine
-The source code of paper "Multi-step-ahead Prediction from Short-term Data by Delay-Embedding-based Forecast Machine".
+- The source code of paper "Multi-step-ahead Prediction from Short-term Data by Delay-Embedding-based Forecast Machine".
+- This project is used to make time series forecasting on the target variable in a high-dimensional dynamical system only with short-term observed data.
 
 
 ## Data avalability
