@@ -17,6 +17,8 @@ We suggest that you run the code with Pycharm.
 
 ## Training and making predicitons
 
+> Firstly, you should modify the variable `DATA_BASE_DIR`(in `line 10, data/data_processing.py`) to the full path of the data folder in your computer.
+
 All the training codes and predicting codes corresponding to different datasets are located at `forecast/` 
 
 ## Experiment reuslts
