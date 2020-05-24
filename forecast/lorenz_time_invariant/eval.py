@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     # load the data
     time_invariant = True
-    data = data_processing.load_lorenz_data(time_invariant=time_invariant)  # lorenz data
+    data = data_processing.load_lorenz_data(time_invariant=time_invariant, n=30, time=3000)  # lorenz data
 
     train_idxs, val_idxs = data_processing.get_data_idxs_as_predict_idx_no_overlap(rate=0.5) 
 
