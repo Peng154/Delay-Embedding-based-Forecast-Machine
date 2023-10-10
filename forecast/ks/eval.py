@@ -1,6 +1,6 @@
 from forecast import st_delay_model
 from data import data_processing
-from forecast.lorenz_time_invariant import lorenz_time_invariant_config
+from forecast.ks import ks_config
 from scipy.stats import pearsonr
 import numpy as np
 import pickle
@@ -56,11 +56,6 @@ def draw_pic(known_y, label_y, predict_y, loss, pcc, x_label=None, y_label=None,
 
 
 def get_model_path(base_log_dir, config):
-    """
-    get the model saved path by config
-    :param config:
-    :return:
-    """
     name_pattern = re.compile('.*\({}\)'.format(config.name))
     # name_pattern = re.compile('.*noise_{:.1f}\)'.format(config.DATA_NOISE_STRENGTH))
     # name_pattern = re.compile('.*\(.*rate_{:.2f}\)'.format(config.DATASET_RATE))
@@ -83,21 +78,21 @@ def get_model_path(base_log_dir, config):
 
 if __name__ == '__main__':
     is_solar = False
-    config = lorenz_time_invariant_config.LorenzTimeInvariantConfig()
-    config.BATCH_SIZE = 1  # set the batch size as 1
+    config = ks_config.KSConfig()
+    config.BATCH_SIZE = 1 
 
-    tf.keras.backend.clear_session()  # clear the previous session
+    tf.keras.backend.clear_session() 
 
     gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
 
-    # load the data
-    time_invariant = True
-    data = data_processing.load_lorenz_data(time_invariant=time_invariant, n=30, time=3000)  # lorenz data
+    data = data_processing.load_ks_data()
 
-    train_idxs, val_idxs = data_processing.get_data_idxs_as_predict_idx_no_overlap(rate=0.5) 
-
+    train_idxs, val_idxs = data_processing.get_data_idxs_as_predict_idx_no_overlap(rate=1,
+                                                                                   interval=60,
+                                                                                   total_count=1300,
+                                                                                   train_count=1200)
 
     mean_train_losses = []
     mean_train_pccs = []
@@ -106,16 +101,17 @@ if __name__ == '__main__':
 
     model = st_delay_model.STDelayModel(config, mode='evaluation', log_dir_suffix=config.name)
 
-    noised_data, y = data_processing.add_noise(data, config)  # 根据config添加噪声
+    noised_data, y = data_processing.add_noise(data, config)
 
-    # get the data generator
     train_generator = st_delay_model.DataGeneratorForLengthCmp(data, y, train_idxs, config)
     val_generator = None if val_idxs is None else st_delay_model.DataGeneratorForLengthCmp(data, y, val_idxs, config)
 
-    # model_path = get_model_path(base_log_dir='./logs/lorenz_len_cmp_rate_0.5', config=config)  
-    # restore the model form specific path
-    model_path = '../../logs/lorenz_len_cmp_rate_0.5/2020_04_09-14_01_03(lorenz_40_19_Yidx_0)/' \
-                 'weights_epoch:0085_loss:0.029_val_loss:0.314_predict_loss:0.499.h5'
+    # model_path = '../../logs/2023_09_18-09_38_00(KS_40_14_Yidx_0)/' \
+    #              'weights_epoch:0085_loss:0.000_val_loss:0.013_predict_loss:0.083.h5'
+    model_path = '../../logs/2023_09_21-20_14_21(KS_merge_only_40_14_Yidx_0)/' \
+                 'weights_epoch:0085_loss:0.001_val_loss:0.015_predict_loss:0.096.h5'
+
+
     print(model_path)
     model.load_weights(model_path)
 
@@ -140,16 +136,17 @@ if __name__ == '__main__':
 
         for item in generator.get_item():
             input_x, label_y, label_matrix = item[0][0], item[-1], item[1][0]
+            # print(input_x.shape)
             predict_y_matrix = model.model.predict(input_x)[0]
 
             # print(model.model.predict(input_x)[-1])
             # print(label_y)
             # print(predict_y_matrix)
 
-            predict_y = utils.get_y_from_matrix(config, predict_y_matrix.T, weighted=False)
+            predict_y = utils.get_y_from_matrix(config, predict_y_matrix.T, weighted=False) 
+            known_y = input_x[0, :, config.Y_IDX] 
+            label_y = item[-1][0] 
 
-            known_y = input_x[0, :, config.Y_IDX]  
-            label_y = item[-1][0]  
 
             loss = np.sqrt(np.mean(np.square(label_y - predict_y)))
             known_ys.append(known_y)
@@ -157,12 +154,11 @@ if __name__ == '__main__':
             label_ys.append(label_y)
             losses.append(loss)
 
-
             pcc, p_value = pearsonr(label_y, predict_y)
             pccs.append(pcc)
 
-            draw_pic(known_y, label_y, predict_y, loss, pcc=pcc, path=result_dir + '/{}.png'.format(idx),
-                     figsize=(8, 6), y_lim=None, x_label='Time', y_label='Value', title='lorenz')  # lorenz
+            # draw_pic(known_y, label_y, predict_y, loss, pcc=pcc, path=result_dir + '/{}.png'.format(idx),
+            #          figsize=(8, 6), y_lim=None, x_label='Time', y_label='Value', title='lorenz')  # lorenz
 
             idx += 1
 
@@ -172,6 +168,8 @@ if __name__ == '__main__':
         print(np.sum(np.array(losses) < 1.0))
         print('mean loss：', np.mean(losses))
         print('mean pcc:', np.mean(pccs))
+        # with open(result_dir + '/losses.pkl', 'wb') as file:
+        #     pickle.dump(np.array(losses, np.float32), file)
         print(np.argsort(losses)[:100])
         print(np.argsort(pccs)[::-1][:100])
 

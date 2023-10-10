@@ -19,7 +19,7 @@ We suggest that you run the code with Pycharm.
 
 - Firstly, you should modify the variable `DATA_BASE_DIR`(in `line 10, data/data_processing.py`) to the full path of the data folder in your computer.
 
-- We release the sample training codes and predicting codes corresponding to the Lorenz time invariant dataset, which is located at folder `forecast/lorenz_time_invariant/`. The script `train.py` is used for training and the script `eval.py` is used for evaluation after training the model. 
+- We release the sample training codes and predicting codes corresponding to the Lorenz time invariant dataset, Lorenz 96 system, and KS equation, which are located at folder `forecast/lorenz_time_invariant/`, `forecast/lorenz96/`, and `forecast/ks/`, respectively. The script `train.py` is used for training and the script `eval.py` is used for evaluation after training the model. 
 
 - We can make predictions on other datasets by modify the given sample codes on Lorenz time invariant dataset.
 

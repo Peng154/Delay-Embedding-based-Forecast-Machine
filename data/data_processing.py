@@ -4,6 +4,7 @@ import h5py
 import scipy.io as sio
 import pandas as pd
 import os
+import data.lorenz96 as lorenz96
 import data.lorenz as lorenz
 
 # TODO: you should change the base path of data dir
@@ -260,6 +261,40 @@ def load_gene_data():
     print(gene.shape)
 
     return name, gene
+
+def load_lorenz96_data(N, F, time_range=(0, 20), dt=0.02, zscore=False):
+    """
+    load lorenz96 data
+    :return: data [time_len, dim]
+    """
+    data = None
+    time = time_range[1] - time_range[0]
+    file_name = 'lorenz/lorenz96_F{}_d{}_t{}.pkl'.format(F, N, int(time / 0.02))
+    if not os.path.exists(os.path.join(DATA_BASE_DIR, file_name)):
+        print(file_name)
+        print('generating lorenz96 data...')
+        data = lorenz96.gen_L96_data(N, F, time_range, dt)
+        with open(os.path.join(DATA_BASE_DIR, file_name), 'wb') as file:
+            pickle.dump(data, file)
+    else:
+        print('loading lorenz  data...')
+        with open(os.path.join(DATA_BASE_DIR, file_name), 'rb') as file:
+            data = pickle.load(file)
+        # print(data.shape)
+    data = data.T[10000:]
+    if zscore:
+        data = z_score(data)
+    return data
+
+
+def load_ks_data():
+    """
+    load KS data
+    :return: data [time_len, dim]
+    """
+    data = np.genfromtxt(os.path.join(DATA_BASE_DIR, 'KSequ_80000.csv'), delimiter=',')
+    data = data.T[:, :512]
+    return data
 
 
 def load_lorenz_data(time_invariant=True, n=30, time=100):
