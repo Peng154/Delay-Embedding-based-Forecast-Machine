@@ -4,7 +4,7 @@
 
 
 ## Data avalability
-For the reason that all the data files are too large, thus all datasets can be download from [Google Drive](https://drive.google.com/open?id=1MLwkQ4APxGHVxnTFOM_TShdHQRJg8dzX). After downloading the zip file, you should extract all dataset folders in the zip file to the target folder `logs/data/`
+For the reason that all the data files are too large, thus all datasets can be download from [Google Drive](https://drive.google.com/file/d/1zzyf55_NkSlETgmuqeVFXR4rBoS1OpYm/view?usp=sharing). After downloading the zip file, you should extract all dataset folders in the zip file to the target folder `logs/data/`
 
 ## Environment requirements
 
