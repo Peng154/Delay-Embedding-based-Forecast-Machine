@@ -36,3 +36,16 @@ The dynamical changes of the predicted and real traffic speeds in these six loca
 ![The prediciton results of Typhoon route dataset.](./demo_gif/typhoon.gif)
 
 The predicted and real moving routes of typhoon Marcus starting from 23:00:00 3/20/2018 to 22:00:00 3/21/2018.
+
+## Citation
+Please cite this paper if you find the repository helpful:
+
+    @article{peng2024defm,
+      title={DEFM: Delay-embedding-based forecast machine for time series forecasting by spatiotemporal information transformation},
+      author={Peng, Hao and Wang, Wei and Chen, Pei and Liu, Rui},
+      journal={Chaos: An Interdisciplinary Journal of Nonlinear Science},
+      volume={34},
+      number={4},
+      year={2024},
+      publisher={AIP Publishing}
+    }
